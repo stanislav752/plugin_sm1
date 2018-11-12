@@ -1,0 +1,73 @@
+#pragma semicolon 1
+
+#include <sourcemod>
+#include <sdktools>
+
+
+public Plugin:myinfo = 
+{
+	name = "console_cmds",
+	author = "Stanislav752",
+	description = "console commands",
+	version = SOURCEMOD_VERSION,
+};
+
+
+public OnPluginStart()
+{
+	RegAdminCmd("sm_bablo", giveBablo, ADMFLAG_BAN, "givebablo");
+	RegAdminCmd("sm_give", giveItem, ADMFLAG_BAN, "giveItem");
+}
+
+public Action:giveItem(client, args)
+{
+	new args_num = GetCmdArgs();
+	
+	if(IsPlayerAlive(client))
+	{
+		if(args_num == 1)
+		{
+			new String:arg1[32];
+			GetCmdArg(1, arg1, sizeof(arg1));
+			
+			GivePlayerItem(client, arg1);
+		}
+		else
+		{
+			PrintToChat(client, "Usage: sm_give String:weapon_name");
+		}
+	}
+}
+
+
+public Action:giveBablo(client, args)
+{
+	new args_num = GetCmdArgs();
+	
+	if(args_num == 1)
+	{
+		new String:arg1[16];
+		GetCmdArg(1, arg1, sizeof(arg1));
+		new babosi = StringToInt(arg1);
+		if(babosi != 0)
+		{
+			SetEntData(client, FindSendPropInfo("CCSPlayer", "m_iAccount"), babosi);
+		}
+		else
+		{
+			PrintToChat(client, "Usage: sm_bablo [int:skolko_babla]");
+		}
+		
+	}
+	else if(args_num < 1)
+	{
+		SetEntData(client, FindSendPropInfo("CCSPlayer", "m_iAccount"), 16000);
+	}
+	else
+	{
+		PrintToChat(client, "Usage: sm_bablo [int:skolko_babla]");
+	}
+}
+
+
+
